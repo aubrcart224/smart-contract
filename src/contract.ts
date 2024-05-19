@@ -189,3 +189,38 @@ class Assertions {
     assert(BigInt(left) < BigInt(right), msg);
   }
 }
+
+
+// wallet integration
+// Path: src/wallet.ts
+const nearAPI = require('near-api-js');
+const getConfig = require('./config');
+
+const nearConfig = getConfig('testnet');
+
+// Initialize connection to the NEAR testnet
+const initNear = async () => {
+  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+  const near = await nearAPI.connect({
+    keyStore,
+    ...nearConfig,
+  });
+
+  // Initialize Wallet based Account
+  const wallet = new nearAPI.WalletConnection(near);
+
+  // If not signed in redirect to the NEAR Wallet
+  if (!wallet.isSignedIn()) {
+    wallet.requestSignIn(
+      'example-contract.testnet', // contract requesting access
+      'NEAR App', // optional title
+      'http://localhost:1234/success', // success URL
+      'http://localhost:1234/failure' // failure URL
+    );
+  }
+
+  // Display accountId
+  document.getElementById('accountId').innerText = wallet.getAccountId();
+};
+
+initNear();
