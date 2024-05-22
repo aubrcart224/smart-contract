@@ -9,6 +9,7 @@ import {
   assert,
   validateAccountId,
 } from "near-sdk-js";
+
 class Account{
   balance: bigint;
   models: LookupMap<number>;
@@ -96,6 +97,7 @@ export class NeuroToken{
     
     return this.accounts.get(accountId).models.get(model_name);
   }
+  
   internalTransaction(accountId: string, model_name:string, amount: bigint, model_percentage:number, withdraw:bigint) {
     const balance = this.getBalance(accountId); 
     const percentage_own = this.getModelPercentage(accountId, model_name);
